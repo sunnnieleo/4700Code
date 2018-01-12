@@ -9,7 +9,7 @@ Install MATLAB (or use a Carleton lab computer with MATLAB preinstalled). This
 is the only prerequisite software needed to run the demonstration code in this
 repo.
 
-## Usage
+## Usage info
 
 MATLAB files are plain-text `.m` files and should be opened directly in MATLAB
 if you wish to run them. If you would just like to edit them, any plain text
