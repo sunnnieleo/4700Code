@@ -101,7 +101,7 @@ T1(c) = KE1 / C.kb;
 PlotVars(c, Limits);
 
 xp = x - dt * Vx;
-xpp = x - 2 * dt * Vx;
+xpp = x - 2 * dt * Vx; %preivouse previosue position. More history required for the Verlet method
 yp = y - dt * Vy;
 ypp = y - 2 * dt * Vy;
 
@@ -122,10 +122,11 @@ while t < TStop
         dvx(Pty0in) = Fx(Pty0in) * dt / Mass0;
         dvx(Pty1in) = Fx(Pty1in) * dt / Mass1;
 
-        Vx = Vx + dvx;
+        
         dx(Pty0in) = Vx(Pty0in) * dt + Fx(Pty0in) * dt^2 / 2 / Mass0;
         dx(Pty1in) = Vx(Pty1in) * dt + Fx(Pty1in) * dt^2 / 2 / Mass1;
-
+        Vx = Vx + dvx;
+        
         dvy(Pty0in) = Fy(Pty0in) * dt/Mass0;
         dvy(Pty1in) = Fy(Pty1in) * dt/Mass1;
 
