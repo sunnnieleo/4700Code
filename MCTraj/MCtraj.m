@@ -71,8 +71,9 @@ function [] = MCtraj(type,nTraj)
             x(c,:) = x(c - 1,:) + dx;
             y(c,:) = y(c - 1,:) + dy;
         end
-
+        
         xl = [xl x(end, :)];
+        
     end
 
     if doPlot

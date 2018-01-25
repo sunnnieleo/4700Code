@@ -14,12 +14,14 @@ T = 300; % temperature in Kalvin
 %define thermal velocity source: https://en.wikipedia.org/wiki/Thermal_velocity
 v_th = sqrt(k*T/Melectron);
 
-%makebox
+%makebox as indicated in assisgnment
+Legnth = 200e-9; 
+Width = 100e-9;
+Area = [Legnth, Width];
 
 %initiate particles (position, mass) 
-XParticles = 2;
-YParticles = 3;
-initalizeParticles( XParticles, YParticles, Melectron )
+NumberOfParticles = 10; %integer value
+initalizeParticles(NumberOfParticles, Area)
 
 %move particles at velocity V_th @T=300K
     %update particles every DeltaT using Newton's laws
