@@ -24,7 +24,6 @@ ProbScatt = 0.95; % 0.05% chance to scattter
 for t =2:10 %for every second starting form 1 to 10s
 %    Fy = m*g;
 %    Fx = m*BearProximity; %The closer the bear the faster the particle run
-    Fy = m1*a1;
     X0(t) = X0(t-1) + F1/m1*t^2;
     v0(t) = v0(t-1) + F1/m1*t;
     
