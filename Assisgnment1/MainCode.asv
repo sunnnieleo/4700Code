@@ -32,6 +32,9 @@ positions = [xlocations, ylocations];
 
 %generate a randome inital angle for each particle in rad
 angle = rand(numP, 1).*2*pi; 
+% % randome velocity and angle for each particle
+% velocityX = rand(numP, 1).* cos(angle);
+% velocityY = rand(numP, 1).* sin(angle);
 
 % randome velocity angle with magnitude v_th 
 velocityX = v_th.* cos(angle);
@@ -47,51 +50,57 @@ for iter =1:1:iterations
        oldP = positions;
        oldV = velocity;
        
+       %Update x position and velocity
+       % x is acting a a time element/step in F=ma ----
+%        positions(:, 1) = positions(:, 1) + velocity(:, 1)*t;
+       
+       %Update y position and velocity       
+%        positions(:, 2) = positions(:, 2) + velocity(:, 2)*t;
+
        %Boundary conditions
-       for j=1:2
-           for n=1:length(xlocations)
-               positions(n, j) = positions(n, j) + velocity(n, j)*t;
-               %if positonX is >= left or right max bounds -->
-               %if positonX <= 0 set postionX = 200nm
-               %if positonX >= 200nm set postionX = 0
-               if j == 1
-                   if positions(n, 1) <= xmin
-                       
-                       positions(n, 1) = xmax + velocity(n, 1)*t;
-                       
-                   elseif positions(n, 1)>= xmax
-                       
-                       positions(n, 1)= xmin + velocity(n, 1)*t;
-                       
-                   end
-               end
-               %if positonY is >= top or bottom max bounds -->
-               %if positonY <= 0 set velocity = -velocity
-               %if positonY >= 100nm set velocity = -velocity
-               if j == 2
-                   if positions(n, 2) <= ymin || positions(n, 2) >= ymax
-                       velocity(n, 2) = -1*velocity(n, 2);%just negate y component
-                       
-                   end
-               end                            
+       for n=1:length(xlocations)
+           for j=1:2
+        %if positonX is >= left or right max bounds --> 
+        %if positonX <= 0 set postionX = 200nm
+        %if positonX >= 200nm set postionX = 0
+            if positions(n, 1) <= xmin
+                
+                positions(n, 1) = xmax + velocity(n, 1)*t;
+                
+            elseif positions(n, 1)>= xmax
+                
+                positions(n, 1)= xmin + velocity(n, 1)*t;
+                
+            else
+                positions(n, j) = positions(n, j) + velocity(n, j)*t;
+            end                
+       %if positonY is >= top or bottom max bounds --> 
+            %if positonY <= 0 set velocity = -velocity
+            %if positonY >= 100nm set velocity = -velocity
+            if positions(n, 2) <= ymax || positions(n, 2) >= ymax
+                velocity(n, 2) = -1*velocity(n, 2);%just negate y component
+                
+%             elseif positions(n, 2) >= ymax
+%                 velocity(n, j) = -1*velocity(n, 2); %just negate y component
+             else
+                positions(n, 2) = positions(n, 2) + velocity(n, 2)*t;
+
+            end
            end
        end
        %Plot x and y cordinated of position (.b indicates curent posioion
        %only) to plot lines save previouse point and plot the two points as
        %a line. Hold on will keep each segment plotted before
-       
-       %to add colout put the plot i a loop, make an array of coulour, adn
-       %for each plot of particle a select colout n form teh colour
-       %array---
-       
        figure (1)
        plot(positions(:, 1), positions(:, 2), '.b')
        hold on
 %        plot(oldP(:, 1), oldP(:, 2), '.r')
        pause(0.2)  
+       %axis([0 200 0 100])
        title ('Electron Simulation of Trajectories')
 
-      
+       %plot trjectories
+       
 end
 
 
