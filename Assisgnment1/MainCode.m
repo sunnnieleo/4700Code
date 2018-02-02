@@ -16,7 +16,7 @@ v_th = sqrt(k*T/Melectron);
 
 a1 = 3; %acceleration
 F1= m0*a1;
-numP = 10; %number of particles
+numP = 100; %number of particles
 iterations = 50; %number of iterations
 
 %box definitions
@@ -98,5 +98,8 @@ for iter =1:1:iterations
     
 end
 
-
+%electron denisty map, loop over x, loop over y (sertting dimentsions for the density. 
+% and then loop over particles to see where they are in the region.
+%if x particle is betteen x region in interes, adn y region of interest
+%then add to density count. ---will be slow, do it at the end
 

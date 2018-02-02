@@ -84,20 +84,20 @@ for iter =1:1:iterations
     %for each plot of particle a select colout n form teh colour
     %array---
     
-    dim = [.2 .5 .3 .3];
+%     dim = [.2 .5 .3 .3];
     % Temperature formula from: https://en.wikipedia.org/wiki/Thermal_velocity
     temp = (mean(velocity(:, 1))^2 + mean(velocity(:, 2))^2)*Melectron/k;
     
     figure (1)
     plot(positions(:, 1), positions(:, 2), '.b')
     hold on
-    %        plot(oldP(:, 1), oldP(:, 2), '.r')
     pause(0.2)
     title ('Electron Simulation of Trajectories')
-    set(text(0.5, 0.5, 'value'), 'final val')
-    %annotation('textbox',dim,'String','Temperature is %.2f', temp, 'FitBoxToText','on')
+%     set(text(0.5, 0.5, 'value'), 'final val')
+%     annotation('textbox',dim,'String','Temperature is %.2f', temp, 'FitBoxToText','on')
     
 end
 
-
+%electron denisty map, loop over x, loop over y (sertting dimentsions for the density. 
+% and then loop over particles to see where they are in the region
 
