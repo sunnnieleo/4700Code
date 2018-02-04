@@ -1,3 +1,4 @@
+
 % % Assignment1: 100963181 Sonya Stuhec-Leonard
 
 % Effective mass of electron Melectron = 0.26*m0, m0=rest mass
@@ -24,6 +25,16 @@ xmax = 200e-9;
 xmin = 0;
 ymax = 100e-9;
 ymin = 0;
+
+%bottleneak defineitions
+TopboxYmax = ymax;
+TopboxYmin = 75e-9;
+
+BoxXmax = 125e-9;
+BoxXmin = 75e-9;
+BboxYmax = 25e-9;
+BboxYmin = ymin;
+
 %initalize randome positions for particles
 %randmone number between 0 and 100nm or 200nm to be within box
 xlocations = rand(numP, 1).*xmax;
@@ -38,8 +49,47 @@ velocityX = v_th.* cos(angle);
 velocityY = v_th.* sin(angle);
 velocity = [velocityX, velocityY];
 
-t = (200e-9/v_th)/100; %use 100 steps to get across the region 200nm long
+% Randome velocity and gle and magnitude based on Maxell boltzman
+% disibution https://chem.libretexts.org/Core/Physical_and_Theoretical_Chemistry/Kinetics/Rate_Laws/Gas_Phase_Kinetics/Maxwell-Boltzmann_Distributions
 
+% MBfunc = @(v) (Melectron/(2*pi*k*T))^(1/2)*exp((-Melectron*v^2)/(2*k*T));% @(c) (4*pi.*c^2)*(Melectron/(2*pi*k*T))^(3/2)*exp(-Melectron.*c^2/(2*k*T))
+% %vels = vecotor of numP ranome velocities.
+%
+% for index = 1:legnth(vels)
+%     weight(index) =  MBfunc(index)
+% end
+%
+% RandVelX = randsample(vels,numP,true,weight)
+% RandVelY = randsample(vels,numP,true,weight)
+
+%use 100 steps to get across the region 200nm long
+t = (200e-9/v_th)/100;
+
+%inner boxes inital conditions test
+% for initx = 1:numP
+%     if (positions(initx, 1)<BoxXmax && positions(initx, 1)>BoxXmin) && (positions(initx, 2)> TopboxYmin || positions(initx, 2)< BboxYmax) %for top inner box
+%         initx=1;
+%         %choose new x particale inital  location
+%         positions(initx, 1) = rand(1).*xmax;
+%         positions(initx, 2) = rand(1).*ymax;
+%         
+%     end
+% end
+
+for inity = 1:numP
+    while (1)
+        if positions(inity, 1)<=BoxXmax && positions(inity, 1)>=BoxXmin && (positions(inity, 2)<= TopboxYmin || positions(inity, 2)>= BboxYmax) %for inner box
+            %inity=inity-1;
+            
+            %choose new y particale inital  location
+            positions(inity, 1) = rand(1).*xmax;
+            %choose new y particale inital  location
+            positions(inity, 2) = rand(1).*ymax;
+        else
+            break
+        end
+    end
+end
 
 for iter =1:1:iterations
     
@@ -51,10 +101,8 @@ for iter =1:1:iterations
     for j=1:2
         for n=1:length(xlocations)
             positions(n, j) = positions(n, j) + velocity(n, j)*t;
-            %if positonX is >= left or right max bounds -->
-            %if positonX <= 0 set postionX = 200nm
-            %if positonX >= 200nm set postionX = 0
-            if j == 1
+            %restrications of x-cordinate of each particle
+            if j == 1 %(for all x cordinates)
                 if positions(n, 1) <= xmin
                     
                     positions(n, 1) = xmax + velocity(n, 1)*t;
@@ -65,17 +113,41 @@ for iter =1:1:iterations
                     
                 end
             end
-            %if positonY is >= top or bottom max bounds -->
-            %if positonY <= 0 set velocity = -velocity
-            %if positonY >= 100nm set velocity = -velocity
+            
+            %y parmaters of region 100X200nm
             if j == 2
                 if positions(n, 2) <= ymin || positions(n, 2) >= ymax
                     velocity(n, 2) = -1*velocity(n, 2);%just negate y component
                     
                 end
             end
-        end
-    end
+            
+ 
+            %for hitting sides of top or bottom box
+%             if (positions(n, 1)<=BoxXmax && positions(n, 1)>=BoxXmin && (positions(n, 2) <= BboxYmax || positions(n, 2)>=TopboxYmin))
+%                 velocity(n, 1) = -1*velocity(n, 1);
+            
+    %for hitting the bottleneck part of top or bottom boxes
+            if (positions(n, 2)>=TopboxYmin || positions(n, 2)<=BboxYmax) && oldP(n, 1)>= BoxXmax && oldP(n, 1)<= BoxXmin
+                if (positions(n, 2) <= BboxYmax || positions(n, 2)<=TopboxYmin)
+                    velocity(n, 1) = -1*velocity(n, 1);
+                end
+                %for hitting the bottleneck part of top or bottom boxes
+            if positions(n, 1)<=BoxXmax && positions(n, 1)>=BoxXmin && oldP(n, 2)<= TopboxYmin && oldP(n, 2)>= BboxYmax
+                if (positions(n, 2) <= BboxYmax || positions(n, 2)>=TopboxYmin)
+                    velocity(n, 2) = -1*velocity(n, 2);
+                end
+%                 %for hitting sides of bottom box
+%             elseif (positions(n, 1)<=BoxXmax && positions(n, 1)<=BoxXmin && (positions(n, 2) >= BboxYmin && positions(n, 2)<=BboxYmax))
+%                 velocity(n, 1) = -1*velocity(n, 1);
+%
+%                 %for hittign the bottom of the top box
+%             elseif positions(n, 1)<=BoxXmax && positions(n, 1)<=BoxXmin && positions(n, 2) <= BboxYmax
+%                 velocity(n, 2) = -1*velocity(n, 2);
+            end
+       end
+end
+
     %Plot x and y cordinated of position (.b indicates curent posioion
     %only) to plot lines save previouse point and plot the two points as
     %a line. Hold on will keep each segment plotted before
@@ -84,20 +156,32 @@ for iter =1:1:iterations
     %for each plot of particle a select colout n form teh colour
     %array---
     
-%     dim = [.2 .5 .3 .3];
+    %     dim = [.2 .5 .3 .3];
     % Temperature formula from: https://en.wikipedia.org/wiki/Thermal_velocity
     temp = (mean(velocity(:, 1))^2 + mean(velocity(:, 2))^2)*Melectron/k;
+    
+    Temperature = 'Temperature:';
+    
+    string = strcat(Temperature, ' ' , num2str(temp));
+    %characters = char(Temperature)
     
     figure (1)
     plot(positions(:, 1), positions(:, 2), '.b')
     hold on
+    %         h = text(string)
+    %         delete(h)
+    axis([xmin, xmax, ymin, ymax])
+%     dim1 = [BoxXmin/xmax (BboxYmin+11e-9)/ymax (BoxXmax-BoxXmin)/xmax (BboxYmax-BboxYmin)/ymax];
+%     annotation('rectangle',dim1,'Color','k')
+%     dim2 = [BoxXmin/xmax (TopboxYmin-7.5e-9)/ymax (BoxXmax-BoxXmin)/xmax (TopboxYmax-TopboxYmin)/ymax];
+%     annotation('rectangle',dim2,'Color','k')
+    
     pause(0.2)
     title ('Electron Simulation of Trajectories')
-%     set(text(0.5, 0.5, 'value'), 'final val')
-%     annotation('textbox',dim,'String','Temperature is %.2f', temp, 'FitBoxToText','on')
+    
     
 end
 
-%electron denisty map, loop over x, loop over y (sertting dimentsions for the density. 
+%electron denisty map, loop over x, loop over y (starting dimentsions for the density.
 % and then loop over particles to see where they are in the region
 
