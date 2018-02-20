@@ -19,7 +19,7 @@ NetDoping(pi) = -Na;
 
 x0 = l/2;
 nw = l/20;
-npDisturbance = 0e16*1e6*exp(-((x-x0)/nw).^2);
+npDisturbance = linspace(1e16, 20e16, nx);
 
 JBC = 1;
 
